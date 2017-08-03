@@ -1,41 +1,27 @@
-// Testbench
+`timescale 1ns/1ns
+
 module test;
 
-  reg clock;
+  reg clock = 0;
   reg [15:0] bin;
-  wire segments[7:0];
-  wire digit[3:0];
-  
+  wire [7:0]segments;
+  wire [3:0]digit;
+
   // Instantiate design under test
-  seg_driver DFF(.clock(clock), .bin(bin),
-          .segments(segments), .digit(digit));
-          
+  seg_driver DUT(clock, bin,
+          segments, digit);
   initial begin
     // Dump waves
-    $dumpfile("dump.vcd");
+    $dumpfile("seg_driver.vcd");
     $dumpvars(1);
-    
-    clock = 0;
-    bin = 10;
-    clock = 1;
-    
-    /*
-    $display("Reset flop.");
-    clk = 0;
-    reset = 1;
-    d = 1'bx;
-    display;
-    
-    $display("Release reset.");
-    d = 1;
-    reset = 0;
-    display;
-
-    $display("Toggle clk.");
-    clk = 1;
-    display;
-    */
+    #1
+    bin = 20;
+    #1
+    #6
+    $finish;
   end
+
+  always #1 clock = !clock;
   /*
   task display;
     #1 $display("segments:%0b, digit:%0b",
